@@ -3,8 +3,8 @@ version: 0.2
 env:
   variables:
     AWS_ACCOUNT_ID: "091846656105"
-    AWS_DEFAULT_REGION: "us-west-1"
-    IMAGE_REPO_NAME: "cat-ecr"
+    AWS_DEFAULT_REGION: "ap-south-2"
+    IMAGE_REPO_NAME: "new-cross-ecr"
     IMAGE_TAG: "latest"
 
 phases:
@@ -15,6 +15,8 @@ phases:
 
   build:
     commands:
+      - echo Verifying Docker daemon...
+      - docker info || (echo "Docker is not running!" && exit 1)
       - echo Building the Docker image...
       - docker build -t $IMAGE_REPO_NAME .
       - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
@@ -24,7 +26,7 @@ phases:
       - echo Pushing the Docker image to ECR...
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
       - echo Writing image definitions file...
-      - echo '[{"name":"cat-ecr","imageUri":"'"$AWS_ACCOUNT_ID"'.dkr.ecr.'"$AWS_DEFAULT_REGION"'.amazonaws.com/'"$IMAGE_REPO_NAME"':'"$IMAGE_TAG"'"}]' > imagedefinitions.json
+      - printf '[{"name":"new-cross-ecr","imageUri":"%s.dkr.ecr.%s.amazonaws.com/%s:%s"}]' $AWS_ACCOUNT_ID $AWS_DEFAULT_REGION $IMAGE_REPO_NAME $IMAGE_TAG > imagedefinitions.json
 
 artifacts:
   files:
