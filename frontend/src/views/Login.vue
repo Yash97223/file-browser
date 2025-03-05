@@ -2,7 +2,7 @@
   <div id="login" :class="{ recaptcha: recaptcha }">
     <form @submit="submit">
       <img :src="logoURL" alt="File Browser" />
-      <h1>{{ name }}</h1>
+      <h1>my-browser</h1>
       <div v-if="error !== ''" class="wrong">{{ error }}</div>
 
       <input
